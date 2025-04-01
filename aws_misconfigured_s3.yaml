@@ -1,0 +1,6 @@
+Resources:
+  VulnerableS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead  # Misconfiguration: Public access
+      BucketName: "my-insecure-bucket-123"
