@@ -34,12 +34,8 @@ jobs:
         
     - name: Scan with Kubescape CLI
       run: |
-        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh \
-          /bin/bash \
-          ~/.kubescape/bin/kubescape scan . \
-          --format sarif \
-          --output results.sarif 
-          
+        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash | ~/.kubescape/bin/kubescape scan . --format sarif --output results.sarif 
+
     - name: Upload Kubescape scan results to Github Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
