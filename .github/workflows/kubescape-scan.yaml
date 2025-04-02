@@ -14,6 +14,15 @@ jobs:
       with:
         format: sarif
         outputFile: results
+
+    - name: Debug SARIF Contents
+      run: |
+        if [ -f results.sarif ]; then
+          cat results.sarif
+        else
+          echo "No SARIF file generated"
+        fi
+        
     - name: Upload Kubescape scan results to Github Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
