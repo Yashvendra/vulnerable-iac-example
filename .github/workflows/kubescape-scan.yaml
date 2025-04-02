@@ -10,10 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: kubescape/github-action@main
-      continue-on-error: true
       with:
         format: sarif
-        outputFile: results
+        outputFile: results.sarif
+        files: "."  # Scan entire repository << Critical fix
+        verbose: true
 
     - name: Debug SARIF Contents
       run: |
