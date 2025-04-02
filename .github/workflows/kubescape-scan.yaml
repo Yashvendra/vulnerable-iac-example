@@ -9,12 +9,17 @@ jobs:
       security-events: write
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install git
+      run: sudo apt-get install -y git
+      
     - uses: kubescape/github-action@main
       with:
         format: sarif
         outputFile: results.sarif
-        files: "."  # Scan entire repository << Critical fix
+        files: "." 
         verbose: true
+        severityThreshold: critical
 
     - name: Debug SARIF Contents
       run: |
