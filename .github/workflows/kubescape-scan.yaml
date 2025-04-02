@@ -34,10 +34,12 @@ jobs:
         
     - name: Install Kubescape
       run: |
-        mkdir -p "${GITHUB_WORKSPACE}/kubescape-bin"
-        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | \
-          /bin/bash -s -- -b "${GITHUB_WORKSPACE}/kubescape-bin"
-        echo "${GITHUB_WORKSPACE}/kubescape-bin" >> $GITHUB_PATH
+        KUBESCAPE_DIR="$HOME/kubescape-bin"
+        mkdir -p "$KUBESCAPE_DIR"
+        LATEST_VERSION=$(curl -s https://api.github.com/repos/kubescape/kubescape/releases/latest | jq -r .tag_name)
+        curl -sL "https://github.com/kubescape/kubescape/releases/download/${LATEST_VERSION}/kubescape-ubuntu-latest" -o "$KUBESCAPE_DIR/kubescape"
+        chmod +x "$KUBESCAPE_DIR/kubescape"
+        echo "$KUBESCAPE_DIR" >> $GITHUB_PATH
         
     - name: Run Kubescape scan
       run: |
