@@ -20,6 +20,9 @@ jobs:
         files: "." 
         verbose: true
         severityThreshold: critical
+        
+    - name: List repository files
+      run: ls -laR
 
     - name: Debug SARIF Contents
       run: |
@@ -29,6 +32,13 @@ jobs:
           echo "No SARIF file generated"
         fi
         
+    - name: Scan with Kubescape CLI
+      run: |
+        docker run -v $(pwd):/scan kubescape/kubescape \
+          scan /scan \
+          --format sarif \
+          --output results.sarif 
+          
     - name: Upload Kubescape scan results to Github Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
