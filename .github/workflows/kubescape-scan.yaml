@@ -13,7 +13,7 @@ jobs:
     - name: Install git
       run: sudo apt-get install -y git
       
-    - uses: kubescape/github-action@main
+    - uses: kubescape/github-action@latest
       with:
         format: sarif
         outputFile: results.sarif
