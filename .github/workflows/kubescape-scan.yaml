@@ -34,8 +34,8 @@ jobs:
         
     - name: Scan with Kubescape CLI
       run: |
-        docker run -v $(pwd):/scan kubescape/kubescape \
-          scan /scan \
+        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash \
+          ~/.kubescape/bin/kubescape scan . \
           --format sarif \
           --output results.sarif 
           
