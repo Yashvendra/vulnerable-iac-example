@@ -32,9 +32,18 @@ jobs:
           echo "No SARIF file generated"
         fi
         
-    - name: Scan with Kubescape CLI
+    - name: Install Kubescape
       run: |
-        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash | ~/.kubescape/bin/kubescape scan . --format sarif --output results.sarif 
+        mkdir -p "${GITHUB_WORKSPACE}/kubescape-bin"
+        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | \
+          /bin/bash -s -- -b "${GITHUB_WORKSPACE}/kubescape-bin"
+        echo "${GITHUB_WORKSPACE}/kubescape-bin" >> $GITHUB_PATH
+        
+    - name: Run Kubescape scan
+      run: |
+        kubescape scan . \
+          --format sarif \
+          --output results.sarif
 
     - name: Upload Kubescape scan results to Github Code Scanning
       uses: github/codeql-action/upload-sarif@v3
