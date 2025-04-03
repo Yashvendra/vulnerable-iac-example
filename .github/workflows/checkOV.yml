@@ -1,0 +1,32 @@
+name: CheckOv
+on: [push, pull_request]
+jobs:
+  kubescape:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Checkov GitHub Action
+      uses: bridgecrewio/checkov-action@v12
+      with:
+        output_format: cli,sarif
+        output_file_path: console,results1.sarif
+        soft_fail: true
+            
+          
+    - name: Debug SARIF Content
+      run: |
+        if [ -f results.sarif ]; then
+          cat results1.sarif
+        else
+          echo "No SARIF file generated"
+        fi
+
+    - name: Upload CheckOV scan results to Github Code Scanning
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: results1.sarif
