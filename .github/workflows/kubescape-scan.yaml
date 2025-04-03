@@ -10,22 +10,33 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Checkov GitHub Action
-      uses: bridgecrewio/checkov-action@v12
-      with:
-        output_format: cli,sarif
-        output_file_path: console,results1.sarif
-            
+    - name: Install git
+      run: sudo apt-get install -y git
+        
+    - name: Install Kubescape
+      run: |
+        KUBESCAPE_DIR="$HOME/kubescape-bin"
+        mkdir -p "$KUBESCAPE_DIR"
+        LATEST_VERSION=$(curl -s https://api.github.com/repos/kubescape/kubescape/releases/latest | jq -r .tag_name)
+        curl -sL "https://github.com/kubescape/kubescape/releases/download/${LATEST_VERSION}/kubescape-ubuntu-latest" -o "$KUBESCAPE_DIR/kubescape"
+        chmod +x "$KUBESCAPE_DIR/kubescape"
+        echo "$KUBESCAPE_DIR" >> $GITHUB_PATH
+        
+    - name: Run Kubescape scan
+      run: |
+        kubescape scan . \
+          --format sarif \
+          --output results.sarif
           
     - name: Debug SARIF Content
       run: |
         if [ -f results.sarif ]; then
-          cat results1.sarif
+          cat results.sarif
         else
           echo "No SARIF file generated"
         fi
 
-    - name: Upload CheckOV scan results to Github Code Scanning
+    - name: Upload Kubescape scan results to Github Code Scanning
       uses: github/codeql-action/upload-sarif@v3
       with:
-        sarif_file: results1.sarif
+        sarif_file: results.sarif
